@@ -291,4 +291,76 @@ class EnemiesShot extends Character {
         this.createCharacter();
     }
 }
+function levels(speed, srcHero, srcEnemy, shotHeroSpeed) {
+    var start = document.getElementById('start');
+    var nextLevel = document.getElementById('nextLevelContainer');
 
+    if (start != null && start != undefined) {
+        document.body.removeChild(start);
+    }
+
+    if (nextLevel != null && nextLevel != undefined) {
+        document.body.removeChild(nextLevel);
+    }
+
+    var windowWidth = window.innerWidth;
+    var windowHieght = window.innerHeight;
+
+    enemySpeed = speed;
+    heroSrc = srcHero;
+    enemySrc = srcEnemy;
+    var enemyHeight = 200;
+
+    //Create Hero 
+    //=========================================< Create Hero >=============================================
+    var hero = new Hero(`${heroSrc}`, 'sea-hero', 20, Math.floor(windowWidth) / 2 - 40);
+    hero.createCharacter();
+    //Move Hero By keyboard
+    document.body.addEventListener('keydown', function (event) {
+        hero.moveHero(event, windowWidth);
+    });
+
+    //=========================================< End Create Hero >============================================= 
+    //HeroShot
+    //===================================< Create Shot of hero >=============================================
+    var heroPosition = document.getElementsByClassName('sea-hero')[0];
+    if (heroPosition != null && heroPosition != undefined) {
+        var heroShot = new HeroShot('../assets/img/missile1.png', 'missile1', parseInt(heroPosition.style.bottom) + 100, parseInt(heroPosition.style.left) + 32);
+        /**
+         * To shot by clicking on space from keyboard
+         */
+        document.body.addEventListener('keyup', function (event) {
+            //setTimeout(function () {
+            heroPosition = document.getElementsByClassName('sea-hero')[0];
+            if (event.keyCode == 32) {
+                if (heroPosition != null || heroPosition != undefined) {
+                    heroPosition = document.getElementsByClassName('sea-hero')[0];
+                    heroShot = new HeroShot('../assets/img/missile1.png', 'missile1', parseInt(heroPosition.style.bottom) + 50, parseInt(heroPosition.style.left) + 32);
+                    heroShot.createShot();
+
+                }
+            }
+            // }, 1000)
+        });
+        /**
+         * To shot by left click on mouse
+         */
+        document.body.addEventListener('mousedown', function (event) {
+            heroPosition = document.getElementsByClassName('sea-hero')[0];
+            if (event.button == 0) {
+                if (heroPosition != null || heroPosition != undefined) {
+                    heroPosition = document.getElementsByClassName('sea-hero')[0];
+                    heroShot = new HeroShot('../assets/img/missile1.png', 'missile1', parseInt(heroPosition.style.bottom) + 50, parseInt(heroPosition.style.left) + 32);
+                    heroShot.createShot();
+                }
+            }
+        });
+
+        moveHeroShot = setInterval(heroShot.shotMove, shotHeroSpeed);
+        moveHeroShot = setInterval(heroShot.shotMove, shotHeroSpeed);
+
+    }
+
+    //===============================< End Creation of hero shot > ==============================
+
+}
