@@ -31,6 +31,62 @@ class Character {//start General class
     }
 }//end general Class
 
+class Hero extends Character {//start hero class
+    /**
+     * 
+     * @param {*} src URL of image
+     * @param {*} classsName  CSS class to character style
+     * @param {Number} characterBottomPos  The space between character and window bottom
+     * @param {Number} characterLeftPos  The space between character and window left
+     */
+    constructor(src, classsName, characterBottomPos, characterLeftPos) {
+        super(src, classsName, characterBottomPos, characterLeftPos);
+    }
+    /**
+     * @description Method move hero left and right 
+     * @param {Event} event Event Object
+     * @param {Number} windowWidth Int Number (width of window)
+     */
+    moveHero(event, windowWidth) { //start method of move hero  
+        var hero = document.getElementsByClassName('sea-hero')[0]; //Get hero element from html 
+        if (hero != null && hero != undefined) { //check hero if exist or not
+            try { //for chatch unexpected error
+                if (event.keyCode == 37) { // check if left arrow button pressed on keyboard
+                    this.leftArrowPress(hero); //calling function to move hero to left
+                } else if (event.keyCode == 39) { //check if right arrow button pressed on keyboard
+                    this.rightArrowPress(hero, windowWidth); //calling function to move hero to right
+                } else if (event.keyCode == 65) { //check if  character (d) button pressed on keyboard
+                    this.leftArrowPress(hero); //calling function to move hero to left
+                } else if (event.keyCode == 68) { //check if character (a) button pressed on keyboard
+                    this.rightArrowPress(hero, windowWidth); //calling function to move hero to right
+                }
+            } catch (error) { //catch error
+                // console.log(error); //log unexpected error on console
+            }
+
+        }
+    }//End method of move hero
+    /**
+     * @description Method for pressing left arrow in keyboard
+     * @param {*} hero  Html Element 
+     */
+    leftArrowPress(hero) {
+        if (parseInt(hero.style.left) > 100) {
+            hero.style.left = parseInt(hero.style.left) - 8 + 'px';
+        }
+    }
+    /**
+     * @description Method for pressing right arrow in keyboard
+     * @param {*} hero  Html Element
+     * @param {Number} windowWidth width of window
+     */
+    rightArrowPress(hero, windowWidth) {
+        if (parseInt(hero.style.left) < windowWidth - 100) {
+            hero.style.left = parseInt(hero.style.left) + 8 + 'px';
+        }
+    }
+}//end hero class
+
 
 /**
  * @author Milad, Ahmed, Amr, Ahmed
