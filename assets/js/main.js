@@ -291,6 +291,27 @@ class EnemiesShot extends Character {
         this.createCharacter();
     }
 }
+
+
+/**
+ * Bulidig game
+ */
+
+/**
+ * Global variable
+ */
+//for set inteervail of heroShot and enemy moves
+var moveHeroShot, moveOfEnemy;
+//for start enemy speed , enemy url and hero url
+var enemySpeed, heroSrc, enemySrc;
+
+var score = 0; // for score of hero
+var shotHeroSpeed = 0; //start speed of hero
+var numberOfLevels = 1; // for levels in game
+var lives = 3; //for Lives of Hero
+
+
+
 function levels(speed, srcHero, srcEnemy, shotHeroSpeed) {
     var start = document.getElementById('start');
     var nextLevel = document.getElementById('nextLevelContainer');
@@ -310,6 +331,143 @@ function levels(speed, srcHero, srcEnemy, shotHeroSpeed) {
     heroSrc = srcHero;
     enemySrc = srcEnemy;
     var enemyHeight = 200;
+    
+    //====================================< Create Enemies >==========================================
+    var Enemy = new Enemies(`${enemySrc}`, 'sea-enemy', windowHieght - enemyHeight, 300);
+    for (let index = 0; index < 3; index++) {
+        for (let i = 300; i < windowWidth - 300; i += 62) {
+            Enemy = new Enemies(`${enemySrc}`, 'sea-enemy', windowHieght - enemyHeight, i);
+            Enemy.enemyCreate();
+        }
+        enemyHeight += 72;
+    }
+
+    //Move Enemy
+    moveOfEnemy = setInterval(function () {
+        Enemy.moveEnemy();
+    }, enemySpeed);
+
+
+    //Enemies Shot
+    var shotOfenemy = setInterval(function () {
+        try {
+
+            var enemies = document.getElementsByClassName('sea-enemy');
+            var index = Math.floor(Math.random() * enemies.length);
+
+            var enemyShots = document.getElementsByClassName('missile2');
+
+            if (enemies[index] != null || enemies[index] != undefined && enemies[index] != null || enemies[index] != undefined) {
+                var enemyShot = new EnemiesShot('../assets/img/missile2.png', 'missile2', parseInt(enemies[index].style.bottom), parseInt(enemies[index].style.left) + 17);
+
+                if (enemyShots == undefined || enemyShots == null) {
+                    enemyShot.enemiesShotCreate();
+
+                    var shot = document.getElementsByClassName('missile2')[0];
+
+
+                  var moveOfshot =  setInterval(function () {
+                        shot.style.bottom = parseInt(shot.style.bottom) - 10 + 'px';
+                        var hero  = document.getElementsByClassName('sea-hero')[0];
+                        
+                        if (hero != null && hero!=undefined && parseInt(shot.style.bottom) <= 100 ) {
+                            if(parseInt(shot.style.left) >= parseInt(hero.style.left) &&parseInt(shot.style.left) <= parseInt(hero.style.left)+64){
+                               // document.body.removeChild(hero);
+                               //document.body.removeChild(shot);
+                               clearInterval(moveOfshot);
+
+                                document.body.removeChild(shot);
+
+
+                                lives -=1;
+                                document.getElementById('lives').textContent = lives;
+                                if (lives == 0) {
+                                    clearInterval(moveOfEnemy);
+                                    clearInterval(shotOfenemy)
+                                    
+                                    document.body.removeChild(hero);
+
+                                    document.getElementById('lives').textContent = 0;
+                                    var gameOver = document.createElement('p');
+                                    gameOver.setAttribute('id', 'gameOver');
+                                    gameOver.innerHTML = 'Game Over<br><button id = "play_again" onclick="window.location.reload(true);"> Play Again </button>';
+                                    document.body.appendChild(gameOver);
+                                    document.getElementById('home').style.display = 'block';
+                                    
+                                }
+                            }
+                        }
+
+
+                        if (parseInt(shot.style.bottom) <= 80) {
+                            document.body.removeChild(shot);
+                        }
+
+                    }, 20);
+
+
+
+                } else if (enemyShots.length == 0) {
+
+                    enemyShot.enemiesShotCreate();
+
+                    var shotOfEnemy = document.getElementsByClassName('missile2')[0];
+                   
+                   var moveOfshot=  setInterval(function () {
+                    shotOfEnemy.style.bottom = parseInt(shotOfEnemy.style.bottom) - 10 + 'px';
+                       
+                        var hero  = document.getElementsByClassName('sea-hero')[0];
+
+                        if (hero != null && hero!=undefined && parseInt(shotOfEnemy.style.bottom) <= 100 ) {
+                            if(parseInt(shotOfEnemy.style.left) >= parseInt(hero.style.left) &&
+                            parseInt(shotOfEnemy.style.left) <= parseInt(hero.style.left)+64){
+                               
+                               clearInterval(moveOfshot);
+
+                                document.body.removeChild(shotOfEnemy);
+
+
+                                lives -=1;
+                                document.getElementById('lives').textContent = lives;
+
+                                if (lives == 0) {
+                                    document.body.removeChild(hero);
+                                    clearInterval(moveOfEnemy);
+                                    clearInterval(shotOfenemy)
+
+                                    document.getElementById('lives').textContent = 0;
+                                    var gameOver = document.createElement('p');
+                                    gameOver.setAttribute('id', 'gameOver');
+                                    gameOver.innerHTML = 'Game Over<br><button id = "play_again" onclick="window.location.reload(true);"> Play Again </button>';
+                                    document.body.appendChild(gameOver);
+                                    document.getElementById('home').style.display = 'block';
+                                    
+                                }
+                            } 
+                        }
+
+
+                        if (parseInt(shotOfEnemy.style.bottom) <= 80) {
+                            try {
+                                document.body.removeChild(shotOfEnemy);
+                            } catch (error) {
+
+                            }
+
+                        }
+
+                    }, 20);
+
+                }
+            }
+
+        } catch (error) {
+
+        }
+    }, 200);
+
+    //====================================< End Create Enemies >==========================================
+
 
     //Create Hero 
     //=========================================< Create Hero >=============================================
@@ -362,5 +520,15 @@ function levels(speed, srcHero, srcEnemy, shotHeroSpeed) {
     }
 
     //===============================< End Creation of hero shot > ==============================
+    var div = document.getElementsByClassName('sea-hero')[0];
+
+    window.onmousemove = function (event) {
+        var x = event.pageX;
+        var y = event.pageY;
+        if ((y + 25) <= window.innerHeight && (x + 25) <= window.innerWidth && x - 25 >= 0 && y - 25 >= 0) {
+            // div.style.top = (y - 25) + 'px';
+            div.style.left = (x - 40) + 'px';
+        }
+    };
 
 }
