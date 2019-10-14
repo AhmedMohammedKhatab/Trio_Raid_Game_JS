@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>TrioRaid</title>
+    <link rel="stylesheet" href="assets/css/index.css">
+    <link rel="icon" href="assets/img/logo.png">
+</head>
+<body>
+    <div class="brand"></div>
+    <div class="start-game">
+       <a href="pages/characters.html">
+        <button class="start-btn">Join The Raid</button>
+       </a>
+       <br>
+       <a href="pages/about.html">About</a>
+       <p>|</p>
+       <a href="PAGES/how.html">How To Play?</a>
+    </div>
+    <img src="assets/img/pause.png" id="playSound" alt="play">
+    <img src="assets/img/play.png" id="pauseSound" alt="pause">
+    <script>
+        var play = document.getElementById('playSound');
+        var pause = document.getElementById('pauseSound');
+        var audio = new Audio('assets/audio/bg.mp3');
+        play.addEventListener('click', function () {
+            play.style.display = 'none';
+            pause.style.display = 'block';
+            audio.play();
+        });
+        pause.addEventListener('click', function () {
+            play.style.display = 'block';
+            pause.style.display = 'none';
+            audio.pause();
+        });
+    </script>
+</body>
+</html>  
