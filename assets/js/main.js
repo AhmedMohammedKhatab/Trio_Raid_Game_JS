@@ -223,6 +223,65 @@ class HeroShot extends Character {//start heroShot class
     }
 }//end heroShot class
 
+class Enemies extends Character {//start enemies class
+    constructor(src, classsName, characterBottomPos, characterLeftPos) {
+        super(src, classsName, characterBottomPos, characterLeftPos);
+    }
+
+    enemyCreate() {
+        this.createCharacter();
+    }
+    moveEnemy() {
+        var enemies = document.getElementsByClassName('sea-enemy');
+        var hero = document.getElementsByClassName('sea-hero')[0];
+        for (let index = 0; index < enemies.length; index++) {
+            enemies[index].style.bottom = parseInt(enemies[index].style.bottom) - 1 + 'px';
+
+            if (parseInt(enemies[index].style.bottom) - 110 == 0) {
+                hero.setAttribute('src', '../assets/img/explode.gif');
+                var audio = new Audio('../assets/audio/explode.mp3');
+
+                setTimeout(function () {
+                    audio.play();
+                    document.body.removeChild(hero);
+
+                    clearInterval(moveOfEnemy);
+
+                    for (let m = 0; m < 7; m++) {
+                        for (let i = 0; i < enemies.length; i++) {
+                            document.body.removeChild(enemies[i]);
+                        }
+                    }
+
+                    if (lives > 1) {
+                        lives--;
+
+                        clearInterval(moveHeroShot);
+                        //clearInterval(moveHeroShot);
+
+                        score = 0; // rest score
+                        document.getElementById('Score').textContent = score; //putting the resetting score to html 
+                        document.getElementById('lives').textContent = lives;
+                        setTimeout(function () {
+                            levels(enemySpeed, heroSrc, enemySrc, shotHeroSpeed);
+                        }, 1000);
+
+                    } else if (lives == 1) {
+
+                        document.getElementById('lives').textContent = 0;
+                        var gameOver = document.createElement('p');
+                        gameOver.setAttribute('id', 'gameOver');
+                        gameOver.innerHTML = 'Game Over<br><button id = "play_again" onclick="window.location.reload(true);"> Play Again </button>';
+                        document.body.appendChild(gameOver);
+                        document.getElementById('home').style.display = 'block';
+                    }
+                }, 500);
+            }
+        }
+
+    }
+}//end enemies class
+
 //create shot of enemies
 class EnemiesShot extends Character {
     constructor(src, classsName, characterBottomPos, characterLeftPos) {
@@ -232,3 +291,4 @@ class EnemiesShot extends Character {
         this.createCharacter();
     }
 }
+
