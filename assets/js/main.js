@@ -31,6 +31,10 @@ class Character {//start General class
     }
 }//end general Class
 
+/**
+ * @author Milad, Ahmed,Amr,Ahmed
+ * @description Class for Hero character
+ */
 class Hero extends Character {//start hero class
     /**
      * 
@@ -218,3 +222,13 @@ class HeroShot extends Character {//start heroShot class
         }
     }
 }//end heroShot class
+
+//create shot of enemies
+class EnemiesShot extends Character {
+    constructor(src, classsName, characterBottomPos, characterLeftPos) {
+        super(src, classsName, characterBottomPos, characterLeftPos);
+    }
+    enemiesShotCreate() {
+        this.createCharacter();
+    }
+}
