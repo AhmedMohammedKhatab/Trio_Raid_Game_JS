@@ -472,3 +472,10 @@ function levels(speed, srcHero, srcEnemy, shotHeroSpeed) {
     };
 }
 
+// var begin = document.getElementById('start');
+// if(begin != null){
+//     begin.addEventListener('click', function () {
+//         var audio = new Audio('../assets/audio/bg.mp3');
+//         audio.play();
+//     });
+// }
