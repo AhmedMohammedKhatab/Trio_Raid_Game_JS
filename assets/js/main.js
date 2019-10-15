@@ -477,5 +477,6 @@ if(begin != null){
     begin.addEventListener('click', function () {
         var audio = new Audio('../assets/audio/bg.mp3');
         audio.play();
+        audio.loop = true;
     });
 }
