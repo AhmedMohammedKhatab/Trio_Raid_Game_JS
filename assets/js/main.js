@@ -2,6 +2,13 @@
  * @author Milad, Ahmed khatab,Amr mousa,Ahmed sherif
  * @description General class for game
  */
+document.onreadystatechange = function () {
+    var state = document.readyState;
+    if (state == 'complete') {
+        document.getElementById('interactive');
+        document.getElementById('loading-page').style.visibility = "hidden";
+    }
+};
 class Character {//start General class
     /**
      * 
@@ -91,7 +98,6 @@ class Hero extends Character {//start hero class
     }
 }//end hero class
 
-
 /**
  * @author Milad, Ahmed, Amr, Ahmed
  * @description class for Hero shots
@@ -117,20 +123,10 @@ class HeroShot extends Character {//start heroShot class
     createShot() {
         var audio = new Audio('../assets/audio/missile.mp3');
         var heroShots = document.getElementsByClassName('missile1');
-
-        if (heroShots == undefined || heroShots == null) {
-            this.createCharacter(); //classing create method
-            audio.play();
-        } else if (heroShots.length == 0) {
+        if (heroShots.length == 0) {
             this.createCharacter(); //classing create method   
             audio.play();
         }
-
-
-
-
-
-
     }
     /**
      * @description shotMove method to move hero shot 
@@ -140,34 +136,31 @@ class HeroShot extends Character {//start heroShot class
         try {
             var heroShot = document.getElementsByClassName('missile1'); //get shots of hero from html file  by class name
             var enemies = document.getElementsByClassName('sea-enemy'); //get enemies from html file by class name
-            var borderHero = document.getElementsByClassName('sea-hero')[0];
+            var loadShot = document.getElementsByClassName('sea-hero')[0];
 
             var index = 0;
             for (index = 0; index < heroShot.length; index++) { //for move all heroShot in the game
                 if (heroShot[index] != null) {
                     heroShot[index].style.bottom = parseInt(heroShot[index].style.bottom) + 1 + 'px'; //move shot
-                    borderHero.style.borderBottom = "15px solid red";
+                    loadShot.style.borderBottom = "15px solid red";
                 }
 
                 for (let i = 0; i < enemies.length; i++) {
-                    let tShot = 16;
-                    let ttshot = 50;
-                    let tEnemy = 51;
                     //for checking if  the shot of hero collides the enemies 
-                    if (heroShot[index] != null && parseInt(heroShot[index].style.bottom) + ttshot == parseInt(enemies[i].style.bottom) ||
+                    if (heroShot[index] != null && parseInt(heroShot[index].style.bottom) + 50 == parseInt(enemies[i].style.bottom) ||
                         parseInt(heroShot[index].style.bottom) == parseInt(enemies[i].style.bottom)) { //check the bottom of hero == bottom of enemy
 
                         if (enemies[i] != null && parseInt(enemies[i].style.left) <= parseInt(heroShot[index].style.left) &&
-                            parseInt(heroShot[index].style.left) + tShot <= parseInt(enemies[i].style.left) + tEnemy) {//check the shot in the body of enemy
+                            parseInt(heroShot[index].style.left) + 16 <= parseInt(enemies[i].style.left) + 51) {//check the shot in the body of enemy
                             enemies[i].setAttribute('src', '../assets/img/giphy.gif');
                             var audio = new Audio('../assets/audio/explode.mp3');
                             audio.play();
                             document.body.removeChild(heroShot[index]); //delete shot
-                            borderHero.style.borderBottom = '15px solid green'
+                            loadShot.style.borderBottom = '15px solid green';
 
                             setTimeout(function () {
                                 document.body.removeChild(enemies[i]); // killed enemy
-                                heroShot = null; // flag for suring the enemy delete  
+                                heroShot = null; // flag for making sure the enemy was deleted  
                                 score += 1; // increament the score of hero
                                 document.getElementById('Score').textContent = score; //butting the score to html file
 
@@ -181,22 +174,20 @@ class HeroShot extends Character {//start heroShot class
                                         nextLevel.innerHTML = `<button 
                                                                 id='nextLevel' 
                                                                 onclick=
-                                                                levels(${enemySpeed - 170},'${heroSrc}','${enemySrc}',${shotHeroSpeed })
+                                                                levels(${enemySpeed - 170},'${heroSrc}','${enemySrc}',${shotHeroSpeed})
                                                                 >
                                                                     Next Level
                                                                 </button>`; //create button for next level and call levels method when click on it
                                         document.body.appendChild(nextLevel);//append p element to html file
-                                        score = 0; //reset score to 0
-                                        document.getElementById('Score').textContent = score; //putting the resetting score to html 
                                     } else if (numberOfLevels == 3) { // check if hero finshed the three level of game
                                         document.body.removeChild(document.getElementsByClassName('sea-hero')[0]); //remove hero after win
-                                        var gameOver = document.createElement('p');//create new p element
-                                        gameOver.setAttribute('id', 'win'); //set id to p element
-                                        gameOver.innerHTML = `You Win <br> 
+                                        var win = document.createElement('p');//create new p element
+                                        win.setAttribute('id', 'win'); //set id to p element
+                                        win.innerHTML = `You Win <br> 
                                                                     <button id='play_again' onclick="window.location.reload(true);"> 
                                                                         Play Again 
                                                                     </button>`;//button if user to want play again
-                                        document.body.appendChild(gameOver);//append p element
+                                        document.body.appendChild(win);//append p element
                                     }
 
                                 }
@@ -206,11 +197,10 @@ class HeroShot extends Character {//start heroShot class
                         }
                     }
                 }
-
                 if (heroShot != null) { // check if hero exist by flag heroShot 
-                    if (parseInt(heroShot[index].style.bottom) >= parseInt(enemies[0].style.bottom)) {//if the shot of hero out the window border will deletting
+                    if (parseInt(heroShot[index].style.bottom) >= parseInt(enemies[0].style.bottom)) {//if the shot of hero out the last enemy bottom border it will be deleted
                         document.body.removeChild(heroShot[index]);//remove the heroShot
-                        borderHero.style.borderBottom = '15px solid green';
+                        loadShot.style.borderBottom = '15px solid green';
                     }
                 }
             }
@@ -257,7 +247,6 @@ class Enemies extends Character {//start enemies class
                         lives--;
 
                         clearInterval(moveHeroShot);
-                        //clearInterval(moveHeroShot);
 
                         score = 0; // rest score
                         document.getElementById('Score').textContent = score; //putting the resetting score to html 
@@ -290,6 +279,56 @@ class EnemiesShot extends Character {
     enemiesShotCreate() {
         this.createCharacter();
     }
+    enemiesMoveShot(shotOfEnemy, moveOfshot) {
+        try {
+            shotOfEnemy.style.bottom = parseInt(shotOfEnemy.style.bottom) - 10 + 'px';
+            var hero = document.getElementsByClassName('sea-hero')[0];
+            if (hero != null && hero != undefined && parseInt(shotOfEnemy.style.bottom) <= 100) {
+                if (parseInt(shotOfEnemy.style.left) >= parseInt(hero.style.left) &&
+                    parseInt(shotOfEnemy.style.left) <= parseInt(hero.style.left) + 64) {
+                    clearInterval(moveOfshot);
+                    document.body.removeChild(shotOfEnemy);
+                    hero.src = '../assets/img/giphy.gif';
+                    var audio = new Audio('../assets/audio/explode.mp3');
+                    audio.play();
+                    setTimeout(function () {
+                        hero.src = `${heroSrc}`;
+                    }, 200);
+                    lives -= 1;
+                    document.getElementById('lives').textContent = lives;
+
+                    if (lives == 0) {
+
+                        document.getElementById('lives').textContent = 0;
+                        var gameOver = document.createElement('p');
+                        gameOver.setAttribute('id', 'gameOver');
+                        gameOver.innerHTML = 'Game Over<br><button id = "play_again" onclick="window.location.reload(true);"> Play Again </button>';
+                        document.body.appendChild(gameOver);
+                        document.getElementById('home').style.display = 'block';
+
+                        document.body.removeChild(hero);
+                        clearInterval(moveOfEnemy);
+                        clearInterval(shotOfenemy);
+
+                    }
+                }
+            }
+
+
+            if (parseInt(shotOfEnemy.style.bottom) <= 80) {
+                try {
+                    document.body.removeChild(shotOfEnemy);
+                } catch (error) {
+
+                }
+
+            }
+
+        } catch (error) {
+
+        }
+
+    }
 }
 
 
@@ -300,7 +339,7 @@ class EnemiesShot extends Character {
 /**
  * Global variable
  */
-//for set inteervail of heroShot and enemy moves
+//for set interval of heroShot and enemy moves
 var moveHeroShot, moveOfEnemy;
 //for start enemy speed , enemy url and hero url
 var enemySpeed, heroSrc, enemySrc;
@@ -309,7 +348,6 @@ var score = 0; // for score of hero
 var shotHeroSpeed = 0; //start speed of hero
 var numberOfLevels = 1; // for levels in game
 var lives = 3; //for Lives of Hero
-
 
 
 function levels(speed, srcHero, srcEnemy, shotHeroSpeed) {
@@ -330,26 +368,23 @@ function levels(speed, srcHero, srcEnemy, shotHeroSpeed) {
     enemySpeed = speed;
     heroSrc = srcHero;
     enemySrc = srcEnemy;
-    var enemyHeight = 200;
-    
+    var enemyMarginTop = 200;
     //====================================< Create Enemies >==========================================
-    var Enemy = new Enemies(`${enemySrc}`, 'sea-enemy', windowHieght - enemyHeight, 300);
+    var Enemy;
     for (let index = 0; index < 3; index++) {
         for (let i = 300; i < windowWidth - 300; i += 62) {
-            Enemy = new Enemies(`${enemySrc}`, 'sea-enemy', windowHieght - enemyHeight, i);
+            Enemy = new Enemies(`${enemySrc}`, 'sea-enemy', windowHieght - enemyMarginTop, i);
             Enemy.enemyCreate();
         }
-        enemyHeight += 72;
+        enemyMarginTop += 72;
     }
-
     //Move Enemy
     moveOfEnemy = setInterval(function () {
         Enemy.moveEnemy();
     }, enemySpeed);
 
-
     //Enemies Shot
-    var shotOfenemy = setInterval(function () {
+    var moveShotOfenemy = setInterval(function () {
         try {
 
             var enemies = document.getElementsByClassName('sea-enemy');
@@ -357,117 +392,25 @@ function levels(speed, srcHero, srcEnemy, shotHeroSpeed) {
 
             var enemyShots = document.getElementsByClassName('missile2');
 
-            if (enemies[index] != null || enemies[index] != undefined && enemies[index] != null || enemies[index] != undefined) {
+            if (enemies[index] != null || enemies[index] != undefined) {
                 var enemyShot = new EnemiesShot('../assets/img/missile2.png', 'missile2', parseInt(enemies[index].style.bottom), parseInt(enemies[index].style.left) + 17);
 
-                if (enemyShots == undefined || enemyShots == null) {
+                if (enemyShots.length == 0) {
                     enemyShot.enemiesShotCreate();
-
-                    var shot = document.getElementsByClassName('missile2')[0];
-
-
-                  var moveOfshot =  setInterval(function () {
-                        shot.style.bottom = parseInt(shot.style.bottom) - 10 + 'px';
-                        var hero  = document.getElementsByClassName('sea-hero')[0];
-                        
-                        if (hero != null && hero!=undefined && parseInt(shot.style.bottom) <= 100 ) {
-                            if(parseInt(shot.style.left) >= parseInt(hero.style.left) &&parseInt(shot.style.left) <= parseInt(hero.style.left)+64){
-                               // document.body.removeChild(hero);
-                               //document.body.removeChild(shot);
-                               clearInterval(moveOfshot);
-
-                                document.body.removeChild(shot);
-
-
-                                lives -=1;
-                                document.getElementById('lives').textContent = lives;
-                                if (lives == 0) {
-                                    clearInterval(moveOfEnemy);
-                                    clearInterval(shotOfenemy)
-                                    
-                                    document.body.removeChild(hero);
-
-                                    document.getElementById('lives').textContent = 0;
-                                    var gameOver = document.createElement('p');
-                                    gameOver.setAttribute('id', 'gameOver');
-                                    gameOver.innerHTML = 'Game Over<br><button id = "play_again" onclick="window.location.reload(true);"> Play Again </button>';
-                                    document.body.appendChild(gameOver);
-                                    document.getElementById('home').style.display = 'block';
-                                    
-                                }
-                            }
-                        }
-
-
-                        if (parseInt(shot.style.bottom) <= 80) {
-                            document.body.removeChild(shot);
-                        }
-
-                    }, 20);
-
-
-
-                } else if (enemyShots.length == 0) {
-
-                    enemyShot.enemiesShotCreate();
-
                     var shotOfEnemy = document.getElementsByClassName('missile2')[0];
-                   
-                   var moveOfshot=  setInterval(function () {
-                    shotOfEnemy.style.bottom = parseInt(shotOfEnemy.style.bottom) - 10 + 'px';
-                       
-                        var hero  = document.getElementsByClassName('sea-hero')[0];
 
-                        if (hero != null && hero!=undefined && parseInt(shotOfEnemy.style.bottom) <= 100 ) {
-                            if(parseInt(shotOfEnemy.style.left) >= parseInt(hero.style.left) &&
-                            parseInt(shotOfEnemy.style.left) <= parseInt(hero.style.left)+64){
-                               
-                               clearInterval(moveOfshot);
-
-                                document.body.removeChild(shotOfEnemy);
-
-
-                                lives -=1;
-                                document.getElementById('lives').textContent = lives;
-
-                                if (lives == 0) {
-                                    document.body.removeChild(hero);
-                                    clearInterval(moveOfEnemy);
-                                    clearInterval(shotOfenemy)
-
-                                    document.getElementById('lives').textContent = 0;
-                                    var gameOver = document.createElement('p');
-                                    gameOver.setAttribute('id', 'gameOver');
-                                    gameOver.innerHTML = 'Game Over<br><button id = "play_again" onclick="window.location.reload(true);"> Play Again </button>';
-                                    document.body.appendChild(gameOver);
-                                    document.getElementById('home').style.display = 'block';
-                                    
-                                }
-                            } 
-                        }
-
-
-                        if (parseInt(shotOfEnemy.style.bottom) <= 80) {
-                            try {
-                                document.body.removeChild(shotOfEnemy);
-                            } catch (error) {
-
-                            }
-
-                        }
-
+                    var moveOfshot = setInterval(function () {
+                        enemyShot.enemiesMoveShot(shotOfEnemy, moveOfshot);
                     }, 20);
-
                 }
             }
 
         } catch (error) {
 
         }
+
     }, 200);
-
     //====================================< End Create Enemies >==========================================
-
 
     //Create Hero 
     //=========================================< Create Hero >=============================================
@@ -483,12 +426,11 @@ function levels(speed, srcHero, srcEnemy, shotHeroSpeed) {
     //===================================< Create Shot of hero >=============================================
     var heroPosition = document.getElementsByClassName('sea-hero')[0];
     if (heroPosition != null && heroPosition != undefined) {
-        var heroShot = new HeroShot('../assets/img/missile1.png', 'missile1', parseInt(heroPosition.style.bottom) + 100, parseInt(heroPosition.style.left) + 32);
+        var heroShot = new HeroShot('../assets/img/missile1.png', 'missile1', parseInt(heroPosition.style.bottom) + 50, parseInt(heroPosition.style.left) + 32);
         /**
          * To shot by clicking on space from keyboard
          */
         document.body.addEventListener('keyup', function (event) {
-            //setTimeout(function () {
             heroPosition = document.getElementsByClassName('sea-hero')[0];
             if (event.keyCode == 32) {
                 if (heroPosition != null || heroPosition != undefined) {
@@ -498,7 +440,6 @@ function levels(speed, srcHero, srcEnemy, shotHeroSpeed) {
 
                 }
             }
-            // }, 1000)
         });
         /**
          * To shot by left click on mouse
@@ -520,15 +461,21 @@ function levels(speed, srcHero, srcEnemy, shotHeroSpeed) {
     }
 
     //===============================< End Creation of hero shot > ==============================
+
     var div = document.getElementsByClassName('sea-hero')[0];
 
     window.onmousemove = function (event) {
         var x = event.pageX;
-        var y = event.pageY;
-        if ((y + 25) <= window.innerHeight && (x + 25) <= window.innerWidth && x - 25 >= 0 && y - 25 >= 0) {
-            // div.style.top = (y - 25) + 'px';
+        if ((x + 25) <= window.innerWidth && x - 25 >= 0) {
             div.style.left = (x - 40) + 'px';
         }
     };
+}
 
+var begin = document.getElementById('start');
+if(begin != null){
+    begin.addEventListener('click', function () {
+        var audio = new Audio('../assets/audio/bg.mp3');
+        audio.play();
+    });
 }
